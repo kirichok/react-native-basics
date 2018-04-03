@@ -1,6 +1,6 @@
 {
   "name": "react-native-basics",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Cross-platform basic UI components and base Redux module for React Native",
   "author": "Evgeniy Kirichok <evgeniy.kirichok@gmail.com>",
   "license": "Apache-2.0",
@@ -29,9 +29,14 @@
   },
   "dependencies": {
     "lodash": "^4.17.5",
-    "react-native-device-info": "^0.21.4"
+    "moment": "^2.22.0",
+    "prop-types": "^15.6.1",
+    "react-native-device-info": "^0.21.4",
+    "react-native-vector-icons": "^4.5.0"
   },
   "devDependencies": {
-    "babel-preset-react-native": "^4.0.0"
+    "babel-preset-react-native": "^4.0.0",
+    "react": "^16.3.0-rc.0",
+    "react-native": "^0.54.0"
   }
 }
