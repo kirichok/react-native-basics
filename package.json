@@ -38,5 +38,8 @@
     "babel-preset-react-native": "^4.0.0",
     "react": "^16.3.0-rc.0",
     "react-native": "^0.54.0"
+  },
+  "scripts": {
+    "postinstall": "react-native link react-native-device-info"
   }
 }
