@@ -1,6 +1,6 @@
 {
   "name": "react-native-basics",
-  "version": "0.0.4-rc.1",
+  "version": "0.0.4-rc.2",
   "description": "Cross-platform basic UI components and base Redux module for React Native",
   "author": "Evgeniy Kirichok <evgeniy.kirichok@gmail.com>",
   "license": "Apache-2.0",
@@ -41,7 +41,7 @@
   },
   "rnpm": {
     "commands": {
-      "postlink": "./link"
+      "postlink": "node node_modules/react-native-basics/run.js"
     }
   }
 }
