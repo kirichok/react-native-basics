@@ -1,10 +1,13 @@
-import {StyleSheet, Dimensions, Platform} from 'react-native';
+import {Dimensions, Platform} from 'react-native';
 import {
     isTablet,
     getBuildNumber,
     getVersion
 } from 'react-native-device-info';
 
+/**
+* Device info
+* */
 export const info = {
     isIOS: Platform.OS === 'ios',
     isAndroid: Platform.OS === 'android',
