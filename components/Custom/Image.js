@@ -1,109 +1,127 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-    Text as RNText,
+    Image as RNImage,
     Animated as RNAnimated
 } from 'react-native';
-import {BuilderFont, BuilderStyle} from "../../helpers/Style";
+import {BuilderStyle} from "../../helpers/Style";
 import Props, {BuilderProps} from '../../helpers/PropTypes';
 import {getComponentStyleByProps, getGlobal, registerComponentStyle} from "../../defaults";
+import {getAssetByName, registerAsset} from "../../helpers/Assets";
 
 /**
- * Custom Text component
- * */
+ *
+ **/
+function getSource(source, uri) {
+    if (source || uri) {
+        return source ? getAssetByName(source) : uri;
+    }
+    throw new Error('Image source is empty');
+}
+
+/**
+ * Custom Image component
+ **/
 function Custom(props) {
     const componentStyle = getComponentStyleByProps(props),
-        textStyle = [
-            componentStyle.text,
-            props.disabled ? componentStyle.disabled : componentStyle.active,
+        imageStyle = [
+            componentStyle.image,
+            props.color ? {tintColor: props.color} : {},
             props.flex ? getGlobal('flex') : {},
+            {
+                width: props.width,
+                height: props.height,
+            }
         ];
-    return <RNText style={textStyle} onPress={props.onPress}>
-        {props.text}
-    </RNText>;
+
+    return <RNImage
+        source={getSource(props.source, props.uri)}
+        resizeMode={props.mode}
+        style={imageStyle}
+    />;
 }
 
 Custom.defaultProps = {
-    componentName: 'Text.Custom',
+    componentName: 'Image.Custom',
     ignoreOwnStyles: false,
-    text: 'Text',
-    disabled: false,
+
+    source: undefined,
+    uri: undefined,
+    mode: 'contain',
+    color: '',
     flex: false,
+
+    width: undefined,
+    height: undefined,
 };
 Custom.propTypes = {
     componentName: PropTypes.string,
     ignoreOwnStyles: PropTypes.bool,
-    text: PropTypes.string.isRequired,
-    onPress: PropTypes.func,
-    style: Props.objectOrNumberOrArray,
-    disabled: PropTypes.bool,
-    flex: PropTypes.bool
+
+    source: PropTypes.string,
+    uri: PropTypes.string,
+    mode: PropTypes.string,
+    color: PropTypes.string,
+    flex: PropTypes.bool,
+
+    width: Props.numberOrString,
+    height: Props.numberOrString
 };
 Custom.displayName = Custom.defaultProps.componentName;
 
 Object.defineProperty(Custom, 'defineStyles', {
     get: function () {
-        return new BuilderTextStyles();
+        return new BuilderImageStyles();
     }
 });
 Object.defineProperty(Custom, 'defineProps', {
     get: function () {
-        return new BuilderTextProps(BuilderTextStyles);
+        return new BuilderImageProps(BuilderImageStyles);
     }
 });
 
-class BuilderTextStyles extends BuilderStyle {
-    active(color) {
-        this.styles.active = {
-            color,
-        };
+class BuilderImageStyles extends BuilderStyle {
+
+}
+
+class BuilderImageProps extends BuilderProps {
+    source(value) {
+        this.props.source = value;
         return this;
     }
 
-    disabled(color) {
-        this.styles.disabled = {
-            color,
-        };
+    uri(uri) {
+        this.props.uri = {uri};
         return this;
     }
 
-    error(color) {
-        this.styles.error = {
-            color,
-        };
+    mode(value) {
+        this.props.mode = value;
         return this;
     }
 
-    font(handle) {
-        if (typeof handle !== 'function') {
-            throw new Error('Handle must be a type of function');
-        }
-        this.styles.text = handle(BuilderFont);
+    color(value) {
+        this.props.color = value;
+        return this;
+    }
+
+    width(value) {
+        this.props.width = value;
+        return this;
+    }
+
+    height(value) {
+        this.props.height = value;
         return this;
     }
 }
 
-class BuilderTextProps extends BuilderProps {
-    disable(value) {
-        this.props.disabled = value;
-        return this;
-    }
-
-    get disabled() {
-        return this.disable(true);
-    }
-
-    text(text) {
-        this.props.text = text;
-        return this;
-    }
-}
+registerAsset('notFound', require('../../defaults/not_found.png'));
 
 registerComponentStyle(Custom, Custom.defineStyles
-    .active('#4a90e2').disabled('#696969').error('#dc3d30')
-    .font(builder => builder.size(16).get)
     .get
 );
+
 
 function Animated(props) {
     const componentStyle = getComponentStyleByProps(props),
@@ -138,25 +156,21 @@ Animated.displayName = Animated.defaultProps.componentName;
 
 Object.defineProperty(Animated, 'defineStyles', {
     get: function () {
-        return new BuilderTextStyles();
+        return new BuilderImageStyles();
     }
 });
 Object.defineProperty(Animated, 'defineProps', {
     get: function () {
-        return new BuilderTextProps(BuilderTextStyles);
+        return new BuilderImageProps(BuilderImageStyles);
     }
 });
 
-registerComponentStyle(Animated, Animated.defineStyles
-    .active('#4a90e2').disabled('#696969').error('#dc3d30')
-    .font(builder => builder.size(16).get)
-    .get
-);
+// registerComponentStyle(Animated, Animated.defineStyles
+//     .active('#4a90e2').disabled('#696969').error('#dc3d30')
+//     .font(builder => builder.size(16).get)
+//     .get
+// );
 
 module.exports = {
-    Text: Custom,
-    Animated: Animated,
-
-    BuilderTextStyles,
-    BuilderTextProps
+    Image: Custom
 };

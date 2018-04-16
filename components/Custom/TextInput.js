@@ -30,7 +30,8 @@ function Custom(props) {
     const componentStyle = getComponentStyleByProps(props),
         textInputStyle = [
             componentStyle.input,
-            props.style
+            props.style,
+            props.flex ? getGlobal('flex') : {},
         ];
 
     return <RNTextInput

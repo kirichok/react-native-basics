@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import {
     View,
 } from 'react-native';
@@ -7,6 +7,7 @@ import {create} from "../../defaults";
 function Row({style = {}, children = null}) {
     return <View style={[styles.row, style]}>{children}</View>
 }
+
 Row.displayName = 'Screen.Row';
 
 function Col({style = {}, flex = false, children = null}) {
@@ -14,13 +15,18 @@ function Col({style = {}, flex = false, children = null}) {
         {children}
     </View>
 }
+
 Col.displayName = 'Screen.Col';
 
-function Sheet({children, backgroundColor = '696969'}) {
-    return <Col style={[styles.container, {backgroundColor}]}>
-        {children}
-    </Col>;
+function Sheet({style, children, backgroundColor = '696969', header}) {
+    return <Fragment>
+        {header}
+        <Col style={[styles.container, {backgroundColor}, style]}>
+            {children}
+        </Col>
+    </Fragment>
 }
+
 Sheet.displayName = 'Screen.Sheet';
 Sheet.builder = {
     get style() {

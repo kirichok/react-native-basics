@@ -28,11 +28,18 @@
     "react-native": "^0.54.0"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "lodash": "^4.17.5",
     "moment": "^2.22.0",
     "prop-types": "^15.6.1",
+    "qs": "^6.5.1",
     "react-native-device-info": "^0.21.4",
-    "react-native-vector-icons": "^4.5.0"
+    "react-native-vector-icons": "^4.5.0",
+    "react-redux": "^5.0.7",
+    "redux": "^3.7.2",
+    "redux-actions": "^2.3.0",
+    "redux-promise-middleware": "^5.0.0",
+    "redux-thunk": "^2.2.0"
   },
   "devDependencies": {
     "babel-preset-react-native": "^4.0.0",

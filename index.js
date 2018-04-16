@@ -1,23 +1,14 @@
 'use strict';
-import {registerComponentStyle} from "./defaults";
-
-
-function test() {
-    return 'Test 111 222';
-}
+import {getComponentCopy, registerComponentStyle} from "./defaults";
+import {getAssetByName, registerAsset} from "./helpers/Assets";
 
 const Basics = {
     get Button() {
         return require('./components/Custom/Button');
     },
-    get styles() {
-        return require('./helpers/Style');
-    },
-
     get Screen() {
         return require('./components/Custom/Screen');
     },
-
     get Col() {
         return require('./components/Custom/Screen').Col;
     },
@@ -27,13 +18,25 @@ const Basics = {
     get Sheet() {
         return require('./components/Custom/Screen').Sheet;
     },
-
     get Label() {
         return require('./components/Custom/Label');
     },
-
     get TextInput() {
         return require('./components/Custom/TextInput').TextInput;
+    },
+    get Image() {
+        return require('./components/Custom/Image').Image;
+    },
+
+    get CodeInput() {
+        return require('./components/CodeInput').CodeInput
+    },
+
+    get styles() {
+        return {
+            ...require('./helpers/Style'),
+            create: require('./defaults').create
+        };
     },
 
     get Builder() {
@@ -42,12 +45,31 @@ const Basics = {
         }
     },
 
-    get test() {
-        return test
+    get Assets() {
+        return {
+            registerAsset,
+            getAssetByName
+        };
+    },
+
+    get Utils() {
+        return require('./helpers');
+    },
+
+    get configs() {
+        return require('configs');
+    },
+
+    get BaseReduxModule() {
+        return require('./helpers/ReduxModules');
     },
 
     registerComponentStyle(componentName, style) {
         registerComponentStyle(componentName, style);
+    },
+
+    get copyComponent() {
+        return getComponentCopy;
     }
 };
 

@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import React from 'react';
 import {StyleSheet} from 'react-native';
 
 export function create(styles) {
@@ -62,16 +63,26 @@ export function getGlobal(pick) {
 }
 
 export function getComponentStyleByProps(props) {
-    return _.merge(
-        {},
-        props.ignoreOwnStyles ? {} : getComponentStyle(props.componentName),
-        props.style
-    );
+    // return _.merge(
+    //     {},
+    //     props.ignoreOwnStyles ? {} : getComponentStyle(props.componentName),
+    //     props.style
+    // );
+
+    return {
+        ...(props.ignoreOwnStyles ? {} : getComponentStyle(props.componentName)),
+        ...props.style
+    };
 }
 
-export function getComponentCopy(component, componentName) {
-    const newComponent = _.merge({}, component);
+export function getComponentCopy(Component, componentName, mixin) {
+    function newComponent(props) {
+        return <Component {...props} componentName={componentName}/>;
+    }
+    Object.setPrototypeOf(newComponent, Component);
     newComponent.defaultProps.componentName = componentName;
     newComponent.displayName = componentName;
+
+    defineStyle(newComponent.displayName, getComponentStyle(Component.displayName));
     return newComponent;
 }

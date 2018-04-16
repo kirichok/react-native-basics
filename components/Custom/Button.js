@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import React from 'react';
 import {
     TouchableOpacity, View
@@ -14,6 +13,7 @@ import {
 import {BuilderStyle, value} from "../../helpers/Style";
 
 const {Text: CustomText} = require('./Text');
+const {Image: CustomImage} = require('./Image');
 
 /**
  * Custom Button component
@@ -272,6 +272,107 @@ registerComponentStyle(Text, Text.defineStyles
     .get
 );
 
+/**
+ * Button with Image
+ * */
+function Image(props) {
+    const componentStyle = getComponentStyle(props.componentName),
+        buttonProps = {style: componentStyle.button, ...props.button},
+        imageProps = {style: componentStyle.image, ...props.image};
+
+    return <Custom {...buttonProps} disabled={props.disabled} ignoreOwnStyles={true}>
+        <CustomImage {...imageProps} disabled={props.disabled} ignoreOwnStyles={true}/>
+    </Custom>
+}
+
+Image.defaultProps = {
+    componentName: 'Button.Image',
+    disabled: false,
+    button: Custom.defaultProps,
+    image: CustomImage.defaultProps,
+};
+Image.propTypes = {
+    componentName: PropTypes.string.isRequired,
+    disabled: PropTypes.bool,
+    button: PropTypes.shape(Custom.propTypes),
+    image: PropTypes.shape(CustomImage.propTypes)
+};
+Image.displayName = Image.defaultProps.componentName;
+Image.defineStyles = {
+    _styles: {
+        button: {},
+        image: {}
+    },
+    button(handle) {
+        if (typeof handle !== 'function') {
+            throw new Error('Handle must be a type of function');
+        }
+        this._styles.button = handle(Custom.defineStyles);
+        return this;
+    },
+    image(handle) {
+        if (typeof handle !== 'function') {
+            throw new Error('Handle must be a type of function');
+        }
+        this._styles.image = handle(CustomImage.defineStyles);
+        return this;
+    },
+    get get() {
+        return this._styles;
+    }
+};
+Image.defineProps = {
+    _props: {
+        button: {},
+        image: {}
+    },
+    disable(value) {
+        this._props.disabled = value;
+        return this;
+    },
+    get disabled() {
+        return this.disable(true);
+    },
+    // component
+    button(handle) {
+        if (typeof handle !== 'function') {
+            throw new Error('Handle must be a type of function');
+        }
+        this._props.button = handle(Custom.defineProps);
+        return this;
+    },
+    image(handle) {
+        if (typeof handle !== 'function') {
+            throw new Error('Handle must be a type of function');
+        }
+        this._props.image = handle(CustomImage.defineProps);
+
+        return this;
+    },
+    get get() {
+        return this._props;
+    }
+};
+
+registerComponentStyle(Image, Image.defineStyles
+    .button(builder => builder
+        .active('#4a90e2').disabled('#696969').error('#dc3d30')
+        .wrap({
+            flexDirection: 'row',
+        })
+        .container({
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            overflow: 'hidden'
+        })
+        .get)
+    .image(builder => builder.get)
+    .get
+);
+
+
 Custom.Text = Text;
+Custom.Image = Image;
 
 module.exports = Custom;
