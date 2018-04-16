@@ -57,7 +57,7 @@ const Basics = {
     },
 
     get configs() {
-        return require('configs');
+        return require('./configs');
     },
 
     get BaseReduxModule() {
