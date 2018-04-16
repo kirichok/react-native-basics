@@ -6,6 +6,9 @@ const Basics = {
     get Button() {
         return require('./components/Custom/Button');
     },
+    get Text() {
+        return require('./components/Custom/Text');
+    },
     get Screen() {
         return require('./components/Custom/Screen');
     },
@@ -53,7 +56,10 @@ const Basics = {
     },
 
     get Utils() {
-        return require('./helpers');
+        return {
+            ...require('./helpers'),
+            ...require('./utils')
+        };
     },
 
     get configs() {

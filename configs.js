@@ -9,8 +9,8 @@ const configs = {
 let IS_DEV = false;
 
 function define(dev, prod) {
-    configs.DEV = {...configs.DEV, dev};
-    configs.PROD = {...configs.PROD, prod};
+    configs.DEV = {...configs.DEV, ...dev};
+    configs.PROD = {...configs.PROD, ...prod};
 }
 
 function isDev(value) {

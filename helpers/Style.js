@@ -101,6 +101,9 @@ export const BuilderFont = {
     get bold() {
         return this.weight('bold');
     },
+    get underline() {
+        return this.textDecorationLine('underline');
+    },
     size(size) {
         this._value.fontSize = value(size);
         return this;
@@ -119,6 +122,14 @@ export const BuilderFont = {
     },
     family(value) {
         this._value.fontFamily = value;
+        return this;
+    },
+    textDecorationLine(value) {
+        this._value.textDecorationLine = value;
+        return this;
+    },
+    lineHeight(value) {
+        this._value.lineHeight= value;
         return this;
     },
     get get() {

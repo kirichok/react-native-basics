@@ -24,15 +24,17 @@ export async function toAPI(promise) {
         },
         reject => {
             const {
-                status = 500,
-                statusText = '',
-                data = null
-            } = reject.response;
+                statusCode = 500,
+                message = '',
+                error
+            } = reject.response.data;
 
-            return {
-                status,
-                data,
-                statusText
+            console.log('--- TO API:', reject.response);
+
+            throw {
+                status: statusCode,
+                message,
+                error
             };
         });
 }

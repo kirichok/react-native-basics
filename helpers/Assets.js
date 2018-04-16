@@ -2,7 +2,7 @@ const assets = {};
 
 export function registerAsset(name, source) {
     if (assets[name]) {
-        throw new Error(`Image name "{name}" is already in use`);
+        throw new Error(`Image name "${name}" is already in use`);
     }
     assets[name] = source;
 }

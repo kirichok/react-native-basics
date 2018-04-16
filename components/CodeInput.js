@@ -29,7 +29,7 @@ class CodeInput extends Component {
         onChange: PropTypes.func.isRequired,
 
         clearErrorHandle: PropTypes.func.isRequired,
-
+        disableNextButton: PropTypes.func
     };
 
     static defaultProps = {
@@ -57,6 +57,7 @@ class CodeInput extends Component {
         },
 
         clearErrorHandle: null,
+        disableNextButton: null,
         style: {}
     };
 
@@ -122,7 +123,7 @@ class CodeInput extends Component {
 
             if (!this.props.error && this.state.code.length === this.props.code.len && this.state.code.length > code.length) {
                 console.log('disable NEXT button');
-                this.props.disableButton && this.props.disableButton();
+                this.props.disableNextButton && this.props.disableNextButton();
             }
 
             console.log('>>>', code, this.props.error);
@@ -219,7 +220,7 @@ class CodeInput extends Component {
                             </Text>
                         </View>
                     }}
-                    keyExtractor={(item, index) => index}
+                    keyExtractor={(item, index) => index.toString()}
                     extraData={code}
                 />
             </Col>

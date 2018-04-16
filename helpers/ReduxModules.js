@@ -14,6 +14,7 @@ const PENDING = new RegExp('.pending', 'gi'),
 class Module {
     constructor(url, state) {
         this.name = this.constructor.name;
+        this.nameRegExp = new RegExp(`^${this.name}.`, 'gi');
         this.url = configs.get().SERVER_API + url;
         // TODO: Where JWT need save?
         this.jwt = '';
@@ -23,19 +24,21 @@ class Module {
             ...state
         };
         this.ACTIONS = {};
+        this.HANDLERS = {};
         this.createActions();
     }
 
     createActions() {
 
-    }
+    };
 
-    initAction(name, handle) {
-        this.ACTIONS[name.toUpperCase()] = `${this.name}/${name.toLowerCase()}`;
+    initAction = (name, handle) => {
+        this.ACTIONS[name.toUpperCase()] = `${this.name}/${name.toUpperCase()}`;
+        this.HANDLERS[[name.toUpperCase()]] = handle;
         this[name.toUpperCase()] = createAction(this.ACTIONS[name.toUpperCase()], handle);
-    }
+    };
 
-    async send(method, path, data = {}, additionalHeaders = {}) {
+    send = async (method, path, data = {}, additionalHeaders = {}) => {
         const isFormData = data && data instanceof FormData,
             headers = {
                 'Content-Type': isFormData ? 'multipart/form-data' : 'application/json',
@@ -73,13 +76,13 @@ class Module {
         return {};
     };
 
-    getReducer(state = this.initalState, {type, payload}) {
+    getReducer = (state = this.initalState, {type = '', payload = null}) => {
         if (type.split('/')[0] === this.name) {
             switch (true) {
                 case type.match(FULFILLED) !== null:
                     return {
                         ...state,
-                        ...this.onFulfilled(state, type.replace(FULFILLED, ''), payload),
+                        ...this.onFulfilled(state, type.replace(FULFILLED, '').replace(this.nameRegExp, ''), payload),
                         loading: false,
                         error: false
                     };
@@ -87,15 +90,17 @@ class Module {
                 case type.match(PENDING) !== null:
                     return {
                         ...state,
-                        ...this.onPending(state, type.replace(PENDING, ''), payload),
+                        ...this.onPending(state, type.replace(PENDING, '').replace(this.nameRegExp, ''), payload),
                         loading: true,
                         error: false
                     };
 
                 case type.match(REJECTED) !== null:
+                    console.log('REJECTED', payload);
+
                     return {
                         ...state,
-                        ...this.onRejected(state, type.replace(REJECTED, ''), payload),
+                        ...this.onRejected(state, type.replace(REJECTED, '').replace(this.nameRegExp, ''), payload),
                         loading: false,
                         error: payload
                     };
@@ -117,7 +122,7 @@ class CrudModule extends Module {
         };
     }
 
-    createActions() {
+    createActions = () => {
         super.createActions();
 
         this.GET = createAction(this.ACTIONS.GET, async (data) => await this.send('GET', '', data));
