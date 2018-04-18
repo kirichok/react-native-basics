@@ -1,16 +1,14 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import {Animated, Text} from 'react-native';
 import PropTypes from 'prop-types';
-import {BuilderFont, BuilderStyle} from "../../helpers/Style";
-import {font, getComponentStyle} from "../../defaults";
+import {BuilderFont, Builder, BuilderProps, BuilderStyles} from '../../helpers/Builders';
 
 const {Row, Col} = require('./Screen');
 const {
     Animated: CustomAnimated,
-    BuilderTextStyles,
-    BuilderTextProps
-} = require('./Text');
 
+    BuilderTextStyles
+} = require('./Text');
 
 class Floating extends Component {
     constructor(props) {
@@ -18,16 +16,10 @@ class Floating extends Component {
 
         const {
             focused,
-
-            style: {
+            mode: {
                 inline,
                 focus
             },
-
-            /*floating: {
-                inline,
-                focus
-            }*/
         } = props;
 
         this.state = {
@@ -40,19 +32,19 @@ class Floating extends Component {
             position: 'absolute',
             left: this._focused.interpolate({
                 inputRange: [0, 1],
-                outputRange: [inline.left, focus.left],
+                outputRange: [inline.position.left, focus.position.left],
             }),
             top: this._focused.interpolate({
                 inputRange: [0, 1],
-                outputRange: [inline.top, focus.top],
+                outputRange: [inline.position.top, focus.position.top],
             }),
             fontSize: this._focused.interpolate({
                 inputRange: [0, 1],
-                outputRange: [inline.size, focus.size],
+                outputRange: [inline.style.font.fontSize, focus.style.font.fontSize],
             }),
             color: this._focused.interpolate({
                 inputRange: [0, 1],
-                outputRange: [inline.color, focus.color],
+                outputRange: [inline.style.font.color, focus.style.font.color],
             }),
         };
     }
@@ -70,52 +62,44 @@ class Floating extends Component {
     componentDidUpdate() {
         Animated.timing(this._focused, {
             toValue: this.state.focused ? 1 : 0,
-            duration: 3000,
+            duration: 200,
         }).start();
-    }
-
-    getStyleByFocus() {
-        return this.props.focused ? this.props.style.focus : this.props.style.inline;
     }
 
     render() {
         const {
-            text = {
-                inline: 'I',
-                focus: 'F',
-            },
-
+            error,
             height,
-
-
-            style: {
+            mode: {
                 focus,
                 inline
             },
-
-            children
+            children,
+            style
         } = this.props;
 
         const {
             focused
         } = this.state;
 
-
-        // const componentStyle = getComponentStyle(props.componentName),
-
-            // textProps = {style: componentStyle.text, ...props.text};
+        // const componentStyle = getComponentStyle(this.props.componentName),
+        //     textProps = {style: componentStyle.text, ...this.props.text};
 
         // const wrap = height === defStyles.label.height ? styles.wrap : [styles.wrap, {paddingTop: height}];
 
-        return <Row style={{backgroundColor: '#696969'}}>
-            <Col style={{}}>
-                {/*<CustomAnimated {...this.getStyleByFocus()} style={this.style} ignoreOwnStyles={true}/>*/}
-
-                <Animated.Text style={this.style}>{focused ? focus.text : inline.text}</Animated.Text>
-
-                {children}
-            </Col>
-        </Row>;
+        return <Fragment>
+            <Row style={style.wrap}>
+                <Col style={{flex: 1, paddingTop: height, ...style.underline}}>
+                    <CustomAnimated {...CustomAnimated.defineProps
+                        .text(focused ? focus.text : inline.text)
+                        .style(builder => builder.animated(this.style).get)
+                        .get}
+                    />
+                    {children}
+                </Col>
+            </Row>
+            {error ? <Text style={style.font}>{error}</Text> : null}
+        </Fragment>
     }
 }
 
@@ -124,8 +108,10 @@ Floating.defaultProps = {
     ignoreOwnStyles: false,
 
     focused: false,
+    height: 20,
+    error: '',
 
-    style: {
+    mode: {
         focus: {
             text: 'Focus text',
             position: {
@@ -133,7 +119,7 @@ Floating.defaultProps = {
                 left: 0
             },
             style: {
-                font: BuilderFont.sm.color('grey').get
+                text: (new BuilderFont()).sm.color('grey').get
             }
         },
         inline: {
@@ -143,11 +129,15 @@ Floating.defaultProps = {
                 left: 10
             },
             style: {
-                font: BuilderFont.md.color('red').get
+                text: (new BuilderFont()).md.color('red').get
             }
         },
+    },
+    style: {
+        wrap: {},
+        font: {},
+        underline: {}
     }
-
 };
 Floating.propTypes = {
     componentName: PropTypes.string,
@@ -165,39 +155,80 @@ Object.defineProperty(Floating, 'defineProps', {
     }
 });
 
+class BuilderFloatingStyles extends BuilderStyles {
+    wrap(value) {
+        this.styles.wrap = value;
+        return this;
+    }
 
-class BuilderFloatingStyles extends BuilderTextStyles {
-    position(left, top) {
-        this.styles.position = {
-            left, top
-        };
+    underline(value) {
+        this.styles.underline = value;
+        return this;
+    }
+
+    // error(handle) {
+    //     this._isFunction(handle);
+    //     this.styles.error = handle(new BuilderTextStyles());
+    //     return this;
+    // }
+}
+
+class BuilderMode extends Builder {
+    text(value) {
+        this.value.text = value;
+        return this;
+    }
+
+    position(top, left) {
+        this.value.position = {top, left};
+        return this;
+    }
+
+    style(handle) {
+        this._isFunction(handle);
+        this.value.style = handle(new BuilderFloatingStyles());
         return this;
     }
 }
 
-class BuilderFloatingProps extends BuilderTextProps {
+class BuilderModes extends Builder {
     focus(handle) {
-        return this._style('focus', handle);
+        return this._mode('focus', handle);
     }
+
     inline(handle) {
-        return this._style('inline', handle);
+        return this._mode('inline', handle);
     }
-    _style(type, handle) {
-        if (!this.StyleBuilder) {
-            throw new Error('Style builder is not defined');
-        }
-        if (typeof handle !== 'function') {
-            throw new Error('Handle must be a type of function');
-        }
-        if (!this.props.style) {
-            this.props.style = {};
-        }
-        this.props.style[type] = handle(new this.StyleBuilder());
+
+    _mode(type, handle) {
+        this._isFunction(handle);
+        this.value[type] = handle(new BuilderMode());
         return this;
     }
 }
 
-delete BuilderFloatingProps.style;
+class BuilderFloatingProps extends BuilderProps {
+    // focused(value) {
+    //     this.props.focused = value;
+    //     return this;
+    // }
+
+    mode(handle) {
+        this._isFunction(handle);
+        this.props.mode = handle(new BuilderModes());
+        return this;
+    }
+
+    height(value) {
+        this.props.height = value;
+        return this;
+    }
+
+    error(value) {
+        this.props.error = value;
+        return this;
+    }
+}
 
 module.exports = {
     Floating

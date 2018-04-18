@@ -4,8 +4,8 @@ import {
     Text as RNText,
     Animated as RNAnimated
 } from 'react-native';
-import {BuilderFont, BuilderStyle} from "../../helpers/Style";
-import Props, {BuilderProps} from '../../helpers/PropTypes';
+import {BuilderStyles, BuilderProps, BuilderFont} from "../../helpers/Builders";
+import Props from '../../helpers/PropTypes';
 import {getComponentStyleByProps, getGlobal, registerComponentStyle} from "../../defaults";
 
 /**
@@ -52,7 +52,7 @@ Object.defineProperty(Custom, 'defineProps', {
     }
 });
 
-class BuilderTextStyles extends BuilderStyle {
+class BuilderTextStyles extends BuilderStyles {
     active(color) {
         this.styles.active = {
             color,
@@ -78,7 +78,15 @@ class BuilderTextStyles extends BuilderStyle {
         if (typeof handle !== 'function') {
             throw new Error('Handle must be a type of function');
         }
-        this.styles.text = handle(BuilderFont);
+        this.styles.text = handle(new BuilderFont());
+        return this;
+    }
+
+    additional(value) {
+        this.styles.text = {
+            ...this.styles.text,
+            ...value
+        };
         return this;
     }
 }
@@ -107,13 +115,14 @@ registerComponentStyle(Custom, Custom.defineStyles
 
 function Animated(props) {
     const componentStyle = getComponentStyleByProps(props),
-        textStyle = [
+        animatedTextStyle = [
             componentStyle.text,
             props.disabled ? componentStyle.disabled : componentStyle.active,
+            componentStyle.animated,
             props.flex ? getGlobal('flex') : {},
         ];
 
-    return <RNAnimated.Text style={props.style} onPress={props.onPress}>
+    return <RNAnimated.Text style={animatedTextStyle} onPress={props.onPress}>
         {props.text}
     </RNAnimated.Text>;
 }
@@ -138,14 +147,23 @@ Animated.displayName = Animated.defaultProps.componentName;
 
 Object.defineProperty(Animated, 'defineStyles', {
     get: function () {
-        return new BuilderTextStyles();
+        return new BuilderAnimatedTextStyles();
     }
 });
 Object.defineProperty(Animated, 'defineProps', {
     get: function () {
-        return new BuilderTextProps(BuilderTextStyles);
+        return new BuilderTextProps(BuilderAnimatedTextStyles);
     }
 });
+
+class BuilderAnimatedTextStyles extends BuilderTextStyles {
+    animated(value) {
+        this.styles.animated = value;
+        return this;
+    }
+}
+
+Custom.Animated = Animated;
 
 registerComponentStyle(Animated, Animated.defineStyles
     .active('#4a90e2').disabled('#696969').error('#dc3d30')
@@ -155,7 +173,7 @@ registerComponentStyle(Animated, Animated.defineStyles
 
 module.exports = {
     Text: Custom,
-    Animated: Animated,
+    Animated,
 
     BuilderTextStyles,
     BuilderTextProps

@@ -10,7 +10,7 @@ import {
 import {Col, Row} from "./Custom/Screen";
 import {create} from "../defaults";
 import {value} from "../helpers/Style";
-import {BuilderFont} from "../helpers/Style";
+import {BuilderFont} from "../helpers/Builders";
 
 
 
@@ -79,7 +79,6 @@ class CodeInput extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (prevState.codeOnDevMode !== nextProps.codeOnDevMode) {
-            console.log('getDerivedStateFromProps:');
             return {
                 codeOnDevMode: nextProps.codeOnDevMode,
                 code: nextProps.codeOnDevMode,
@@ -122,11 +121,8 @@ class CodeInput extends Component {
             }
 
             if (!this.props.error && this.state.code.length === this.props.code.len && this.state.code.length > code.length) {
-                console.log('disable NEXT button');
                 this.props.disableNextButton && this.props.disableNextButton();
             }
-
-            console.log('>>>', code, this.props.error);
 
             this.setState({code}, () => {
                 if (code.length === this.props.code.len) {
@@ -178,7 +174,7 @@ class CodeInput extends Component {
                     height: value(height),
                     textAlign: 'center',
                     lineHeight: value(height),
-                    ...BuilderFont
+                    ...(new BuilderFont())
                         .size(height)
                         .color(this.props.error ? color.error : color.normal)
                         .get,
@@ -260,7 +256,7 @@ const styles = create({
     },
 
     error: {
-        ...BuilderFont.size(10).color('red').get,
+        ...(new BuilderFont()).size(10).color('red').get,
     },
 
     transparent: {

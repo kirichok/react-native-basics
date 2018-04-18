@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import {StyleSheet} from 'react-native';
+import PropTypes from "prop-types";
 
 export function create(styles) {
     return StyleSheet.create(styles);
@@ -79,7 +80,13 @@ export function getComponentCopy(Component, componentName, mixin) {
     function newComponent(props) {
         return <Component {...props} componentName={componentName}/>;
     }
-    Object.setPrototypeOf(newComponent, Component);
+    // Object.setPrototypeOf(newComponent, Component);
+
+    newComponent.defaultProps = Component.defaultProps;
+    newComponent.propTypes = Component.propTypes;
+    newComponent.defineStyles = Component.defineStyles;
+    newComponent.defineProps = Component.defineProps;
+
     newComponent.defaultProps.componentName = componentName;
     newComponent.displayName = componentName;
 

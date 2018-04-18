@@ -1,11 +1,13 @@
-import React from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {
     TextInput as RNTextInput
 } from 'react-native';
-import {BuilderFont, BuilderStyle} from "../../helpers/Style";
-import Props, {BuilderProps} from '../../helpers/PropTypes';
+import {BuilderStyles, BuilderProps, BuilderFont} from "../../helpers/Builders";
+import Props, {} from '../../helpers/PropTypes';
 import {getComponentStyleByProps, getGlobal, registerComponentStyle} from "../../defaults";
+
+const Label = require('./Label');
 
 /**
  * Custom TextInput component
@@ -29,8 +31,11 @@ function Custom(props) {
 
     const componentStyle = getComponentStyleByProps(props),
         textInputStyle = [
+            {
+                margin: 0,
+                padding: 0
+            },
             componentStyle.input,
-            props.style,
             props.flex ? getGlobal('flex') : {},
         ];
 
@@ -48,6 +53,7 @@ function Custom(props) {
         autoCapitalize={'none'}
         keyboardType={keyboard}
 
+        clearTextOnFocus={false}
         autoCorrect={false}
         secureTextEntry={secure}
         editable={editable}
@@ -95,7 +101,7 @@ Object.defineProperty(Custom, 'defineProps', {
     }
 });
 
-class BuilderTextInputStyles extends BuilderStyle {
+class BuilderTextInputStyles extends BuilderStyles {
     active(color) {
         this.styles.active = {
             color,
@@ -121,7 +127,7 @@ class BuilderTextInputStyles extends BuilderStyle {
         if (typeof handle !== 'function') {
             throw new Error('Handle must be a type of function');
         }
-        this.styles.input = handle(BuilderFont);
+        this.styles.input = handle(new BuilderFont());
         return this;
     }
 }
@@ -188,6 +194,125 @@ registerComponentStyle(Custom, Custom.defineStyles
     .get
 );
 
-module.exports = {
-    TextInput: Custom
+
+/**
+ *
+ **/
+
+
+
+
+
+
+
+
+/**
+ * TextInput with Label
+ **/
+class Labeled extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            focused: this.props.textInput.focus,
+        };
+    }
+
+    onFocus = () => {
+        this.setState({focused: true});
+    };
+
+    onBlur = () => {
+        this.setState({focused: false});
+    };
+
+    render() {
+        return <Label.Floating
+            {...this.props.label}
+            focused={this.state.focused || this.props.textInput.value}
+        >
+            <Custom
+                {...this.props.textInput}
+                onFocus={this.onFocus}
+                onBlur={this.onBlur}
+            />
+        </Label.Floating>;
+    }
+}
+
+Labeled.propTypes = {
+    componentName: PropTypes.string.isRequired,
+    disabled: PropTypes.bool,
+
+    label: PropTypes.shape(Label.Floating.propTypes),
+    textInput: PropTypes.shape(Custom.propTypes)
 };
+Labeled.defaultProps = {
+    componentName: 'TextInput.Labeled',
+    disabled: false,
+
+    label: Label.Floating.defaultProps,
+    textInput: Custom.defaultProps
+};
+Labeled.displayName = Labeled.defaultProps.componentName;
+Labeled.defineStyles = {
+    _styles: {
+        label: {},
+        textInput: {}
+    },
+    label(handle) {
+        if (typeof handle !== 'function') {
+            throw new Error('Handle must be a type of function');
+        }
+        this._styles.label = handle(Label.Floating.defineStyles);
+        return this;
+    },
+    textInput(handle) {
+        if (typeof handle !== 'function') {
+            throw new Error('Handle must be a type of function');
+        }
+        this._styles.textInput = handle(Custom.defineStyles);
+        return this;
+    },
+    get get() {
+        return this._styles;
+    }
+};
+Labeled.defineProps = {
+    _props: {
+        label: {},
+        textInput: {}
+    },
+    disable(value) {
+        this._props.disabled = value;
+        return this;
+    },
+    get disabled() {
+        return this.disable(true);
+    },
+    // component
+    label(handle) {
+        if (typeof handle !== 'function') {
+            throw new Error('Handle must be a type of function');
+        }
+        this._props.label = handle(Label.Floating.defineProps);
+        return this;
+    },
+    textInput(handle) {
+        if (typeof handle !== 'function') {
+            throw new Error('Handle must be a type of function');
+        }
+        this._props.textInput = handle(Custom.defineProps);
+
+        return this;
+    },
+    get get() {
+        return this._props;
+    }
+};
+
+
+
+
+Custom.Labeled = Labeled;
+
+module.exports = Custom;

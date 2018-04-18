@@ -3,14 +3,15 @@ import {
     TouchableOpacity, View
 } from 'react-native';
 import PropTypes from "prop-types";
-import Props, {BuilderProps} from "../../helpers/PropTypes";
+import Props from "../../helpers/PropTypes";
+import {BuilderProps, BuilderStyles} from "../../helpers/Builders";
 import {
     getComponentStyle,
     getComponentStyleByProps,
     getGlobal,
     registerComponentStyle
 } from "../../defaults";
-import {BuilderStyle, value} from "../../helpers/Style";
+import {value} from "../../helpers/Style";
 
 const {Text: CustomText} = require('./Text');
 const {Image: CustomImage} = require('./Image');
@@ -46,7 +47,7 @@ Custom.defaultProps = {
     onPress: null,
     style: {},
     activeOpacity: 0.8,
-    height: value(40),
+    height: null,//value(40),
     radius: 0,
     flex: false
 };
@@ -73,7 +74,7 @@ Object.defineProperty(Custom, 'defineProps', {
     }
 });
 
-class BuilderButtonStyles extends BuilderStyle {
+class BuilderButtonStyles extends BuilderStyles {
     active(backgroundColor) {
         this.styles.active = {
             backgroundColor,
@@ -121,17 +122,6 @@ class BuilderButtonProps extends BuilderProps {
             throw new Error('Handle must be a type of function');
         }
         this.props.onPress = handle;
-        return this;
-    }
-
-    style(handle) {
-        if (!this.StyleBuilder) {
-            throw new Error('Style builder is not defined');
-        }
-        if (typeof handle !== 'function') {
-            throw new Error('Handle must be a type of function');
-        }
-        this.props.style = handle(new this.StyleBuilder());
         return this;
     }
 
@@ -294,6 +284,7 @@ Image.defaultProps = {
 Image.propTypes = {
     componentName: PropTypes.string.isRequired,
     disabled: PropTypes.bool,
+
     button: PropTypes.shape(Custom.propTypes),
     image: PropTypes.shape(CustomImage.propTypes)
 };

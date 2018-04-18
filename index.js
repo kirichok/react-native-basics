@@ -7,7 +7,7 @@ const Basics = {
         return require('./components/Custom/Button');
     },
     get Text() {
-        return require('./components/Custom/Text');
+        return require('./components/Custom/Text').Text;
     },
     get Screen() {
         return require('./components/Custom/Screen');
@@ -25,7 +25,7 @@ const Basics = {
         return require('./components/Custom/Label');
     },
     get TextInput() {
-        return require('./components/Custom/TextInput').TextInput;
+        return require('./components/Custom/TextInput');
     },
     get Image() {
         return require('./components/Custom/Image').Image;
@@ -43,8 +43,9 @@ const Basics = {
     },
 
     get Builder() {
+        const {BuilderFont} = require('./helpers/Builders');
         return {
-            Font: require('./helpers/Style').BuilderFont
+            Font: new BuilderFont()
         }
     },
 
@@ -58,7 +59,8 @@ const Basics = {
     get Utils() {
         return {
             ...require('./helpers'),
-            ...require('./utils')
+            ...require('./utils'),
+            ...require('./utils/validator')
         };
     },
 

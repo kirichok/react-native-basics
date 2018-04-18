@@ -42,99 +42,86 @@ function getField(defaults, props, field) {
         : defaults[field]
 }
 
-/**
- * Style builder for components
- * */
-export class BuilderStyle {
-    constructor() {
-        this.styles = {};
-    }
-
-    get get() {
-        return this.styles;
-    }
-}
-
-/**
- * Get font.
- * Note: at the end need call get.
- *
- * Examples:
- * font.xl.bold.get return for iOS:
- * {
- *      fontFamily: 'System',
- *      fontSize: 40,
- *      fontWeight: 'bold',
- *      color: '#4a4a4a'
- * }
- *
- * font.get return for iOS (gets default):
- * {
- *      fontFamily: 'System',
- *      fontSize: 16,
- *      fontWeight: 'normal',
- *      color: '#4a4a4a'
- * }
- * */
-
-const _value = {
-    fontFamily: info.isIOS ? defaults.font.name.ios : defaults.font.name.android,
-    fontSize: value(defaults.font.size.default),
-    fontWeight: 'normal',
-    color: defaults.font.color.default
-};
-
-export const BuilderFont = {
-    _value: {..._value},
-    get sm() {
-        return this.size(defaults.font.size.sm);
-    },
-    get md() {
-        return this.size(defaults.font.size.md);
-    },
-    get lg() {
-        return this.size(defaults.font.size.lg);
-    },
-    get xl() {
-        return this.size(defaults.font.size.xl);
-    },
-    get bold() {
-        return this.weight('bold');
-    },
-    get underline() {
-        return this.textDecorationLine('underline');
-    },
-    size(size) {
-        this._value.fontSize = value(size);
-        return this;
-    },
-    weight(weight) {
-        this._value.fontWeight = weight;
-        return this;
-    },
-    color(color) {
-        this._value.color = color;
-        return this;
-    },
-    spacing(value) {
-        this._value.letterSpacing = value;
-        return this;
-    },
-    family(value) {
-        this._value.fontFamily = value;
-        return this;
-    },
-    textDecorationLine(value) {
-        this._value.textDecorationLine = value;
-        return this;
-    },
-    lineHeight(value) {
-        this._value.lineHeight= value;
-        return this;
-    },
-    get get() {
-        const res = {...this._value};
-        this._value = {..._value};
-        return res;
-    }
-};
+// /**
+//  * Get font.
+//  * Note: at the end need call get.
+//  *
+//  * Examples:
+//  * font.xl.bold.get return for iOS:
+//  * {
+//  *      fontFamily: 'System',
+//  *      fontSize: 40,
+//  *      fontWeight: 'bold',
+//  *      color: '#4a4a4a'
+//  * }
+//  *
+//  * font.get return for iOS (gets default):
+//  * {
+//  *      fontFamily: 'System',
+//  *      fontSize: 16,
+//  *      fontWeight: 'normal',
+//  *      color: '#4a4a4a'
+//  * }
+//  * */
+//
+// const _value = {
+//     fontFamily: info.isIOS ? defaults.font.name.ios : defaults.font.name.android,
+//     fontSize: value(defaults.font.size.default),
+//     fontWeight: 'normal',
+//     color: defaults.font.color.default
+// };
+//
+// export const BuilderFont = {
+//     _value: {..._value},
+//     get sm() {
+//         return this.size(defaults.font.size.sm);
+//     },
+//     get md() {
+//         return this.size(defaults.font.size.md);
+//     },
+//     get lg() {
+//         return this.size(defaults.font.size.lg);
+//     },
+//     get xl() {
+//         return this.size(defaults.font.size.xl);
+//     },
+//     get bold() {
+//         return this.weight('bold');
+//     },
+//     get underline() {
+//         return this.textDecorationLine('underline');
+//     },
+//     size(size) {
+//         this._value.fontSize = value(size);
+//         return this;
+//     },
+//     weight(weight) {
+//         this._value.fontWeight = weight;
+//         return this;
+//     },
+//     color(color) {
+//         this._value.color = color;
+//         return this;
+//     },
+//     spacing(value) {
+//         this._value.letterSpacing = value;
+//         return this;
+//     },
+//     family(value) {
+//         this._value.fontFamily = value;
+//         return this;
+//     },
+//     textDecorationLine(value) {
+//         this._value.textDecorationLine = value;
+//         return this;
+//     },
+//     lineHeight(value) {
+//         this._value.lineHeight= value;
+//         return this;
+//     },
+//     get get() {
+//         const res = {...this._value};
+//         this._value = {..._value};
+//         return res;
+//     }
+// };

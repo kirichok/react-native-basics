@@ -4,8 +4,8 @@ import {
     Image as RNImage,
     Animated as RNAnimated
 } from 'react-native';
-import {BuilderStyle} from "../../helpers/Style";
-import Props, {BuilderProps} from '../../helpers/PropTypes';
+import {BuilderStyles, BuilderProps} from "../../helpers/Builders";
+import Props from '../../helpers/PropTypes';
 import {getComponentStyleByProps, getGlobal, registerComponentStyle} from "../../defaults";
 import {getAssetByName, registerAsset} from "../../helpers/Assets";
 
@@ -33,6 +33,8 @@ function Custom(props) {
                 height: props.height,
             }
         ];
+
+    console.log('!!!!!!!!', componentStyle);
 
     return <RNImage
         source={getSource(props.source, props.uri)}
@@ -80,8 +82,11 @@ Object.defineProperty(Custom, 'defineProps', {
     }
 });
 
-class BuilderImageStyles extends BuilderStyle {
-
+class BuilderImageStyles extends BuilderStyles {
+    addition(value) {
+        this.styles.image = value;
+        return this;
+    }
 }
 
 class BuilderImageProps extends BuilderProps {
