@@ -66,18 +66,27 @@ class Module {
 
     onPending(state, type, payload) {
         return {};
-    };
+    }
 
     onFulfilled(state, type, payload) {
         return {};
-    };
+    }
 
     onRejected(state, type, payload) {
         return {};
-    };
+    }
+
+    onNotAsync(state, type, payload) {
+        console.error('NOT ASYNC ACTION: ', type, payload);
+        return {};
+    }
 
     getReducer = (state = this.initalState, {type = '', payload = null}) => {
+        console.log('0', type, payload);
         if (type.split('/')[0] === this.name) {
+
+            console.log('1', type, payload);
+
             switch (true) {
                 case type.match(FULFILLED) !== null:
                     return {
@@ -103,6 +112,14 @@ class Module {
                         ...this.onRejected(state, type.replace(REJECTED, '').replace(this.nameRegExp, ''), payload),
                         loading: false,
                         error: payload
+                    };
+
+                default:
+                    return {
+                        ...state,
+                        loading: false,
+                        error: false,
+                        ...this.onNotAsync(state, type.replace(REJECTED, '').replace(this.nameRegExp, ''), payload),
                     };
             }
         }

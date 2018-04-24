@@ -76,7 +76,7 @@ class BuilderTextStyles extends BuilderStyles {
 
     font(handle) {
         if (typeof handle !== 'function') {
-            throw new Error('Handle must be a type of function');
+            throw new Error('[Builder.Styles] Text (Font): Handle must be a type of function');
         }
         this.styles.text = handle(new BuilderFont());
         return this;

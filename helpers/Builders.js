@@ -13,7 +13,7 @@ export class Builder {
 
     _isFunction(handle) {
         if (typeof handle !== 'function') {
-            throw new Error('Handle must be a type of function');
+            throw new Error(`[${this.constructor.name}] . (_isFunction): Handle must be a type of function`);
         }
     }
 }
@@ -25,6 +25,13 @@ export class BuilderProps {
     constructor(StyleBuilder) {
         this.props = {};
         this.StyleBuilder = StyleBuilder;
+    }
+
+    reference(value) {
+        if (value) {
+            this.props.ref = value;
+        }
+        return this;
     }
 
     get flex() {
@@ -58,15 +65,15 @@ export class BuilderProps {
         return this.props;
     }
 
-    _applyHandle(prop, handle) {
-        this._isFunction(handle);
+    _applyHandle(prop, handle, ignore = false) {
+        this._isFunction(handle, ignore);
         this.props[prop] = handle;
         return this;
     }
 
-    _isFunction(handle) {
-        if (typeof handle !== 'function') {
-            throw new Error('Handle must be a type of function');
+    _isFunction(handle, ignore) {
+        if (typeof handle !== 'function' && (!handle && !ignore)) {
+            throw new Error(`[${this.constructor.name}] . (_isFunction): Handle must be a type of function`);
         }
     }
 }
@@ -81,7 +88,7 @@ export class BuilderStyles {
 
     font(handle) {
         if (typeof handle !== 'function') {
-            throw new Error('Handle must be a type of function');
+            throw new Error('[Builder.Styles] . (Font): Handle must be a type of function');
         }
         this.styles.font = handle(new BuilderFont());
         return this;
@@ -93,7 +100,7 @@ export class BuilderStyles {
 
     _isFunction(handle) {
         if (typeof handle !== 'function') {
-            throw new Error('Handle must be a type of function');
+            throw new Error('[Builder.Styles] . (_isFunction): Handle must be a type of function');
         }
     }
 }

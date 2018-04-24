@@ -119,7 +119,7 @@ class BuilderButtonProps extends BuilderProps {
 
     onPress(handle) {
         if (typeof handle !== 'function') {
-            throw new Error('Handle must be a type of function');
+            throw new Error('[Builder.Props] Button (onPress): Handle must be a type of function');
         }
         this.props.onPress = handle;
         return this;
@@ -193,14 +193,14 @@ Text.defineStyles = {
     },
     button(handle) {
         if (typeof handle !== 'function') {
-            throw new Error('Handle must be a type of function');
+            throw new Error('[defineStyles] Text (Button): Handle must be a type of function');
         }
         this._styles.button = handle(Custom.defineStyles);
         return this;
     },
     text(handle) {
         if (typeof handle !== 'function') {
-            throw new Error('Handle must be a type of function');
+            throw new Error('[defineStyles] Text (Text): Handle must be a type of function');
         }
         this._styles.text = handle(CustomText.defineStyles);
         return this;
@@ -225,14 +225,14 @@ Text.defineProps = {
     // component
     button(handle) {
         if (typeof handle !== 'function') {
-            throw new Error('Handle must be a type of function');
+            throw new Error('[defineProps] Text (Button): Handle must be a type of function');
         }
         this._props.button = handle(Custom.defineProps);
         return this;
     },
     text(handle) {
         if (typeof handle !== 'function') {
-            throw new Error('Handle must be a type of function');
+            throw new Error('[defineProps] Text (Text): Handle must be a type of function');
         }
         this._props.text = handle(CustomText.defineProps);
         return this;
@@ -296,14 +296,14 @@ Image.defineStyles = {
     },
     button(handle) {
         if (typeof handle !== 'function') {
-            throw new Error('Handle must be a type of function');
+            throw new Error('[defineStyles] Button.Image (Button): Handle must be a type of function');
         }
         this._styles.button = handle(Custom.defineStyles);
         return this;
     },
     image(handle) {
         if (typeof handle !== 'function') {
-            throw new Error('Handle must be a type of function');
+            throw new Error('[defineStyles] Button.Image (Image): Handle must be a type of function');
         }
         this._styles.image = handle(CustomImage.defineStyles);
         return this;
@@ -327,14 +327,14 @@ Image.defineProps = {
     // component
     button(handle) {
         if (typeof handle !== 'function') {
-            throw new Error('Handle must be a type of function');
+            throw new Error('[defineProps] Button.Image (Button): Handle must be a type of function');
         }
         this._props.button = handle(Custom.defineProps);
         return this;
     },
     image(handle) {
         if (typeof handle !== 'function') {
-            throw new Error('Handle must be a type of function');
+            throw new Error('[defineProps] Button.Image (Image): Handle must be a type of function');
         }
         this._props.image = handle(CustomImage.defineProps);
 

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, forwardRef} from 'react';
 import PropTypes from 'prop-types';
 import {
     TextInput as RNTextInput
@@ -12,7 +12,8 @@ const Label = require('./Label');
 /**
  * Custom TextInput component
  * */
-function Custom(props) {
+
+const Custom = forwardRef((props, ref) => {
     const {
         onChange,
         value,
@@ -26,7 +27,6 @@ function Custom(props) {
         onFocus,
         onBlur,
         onKeyPress
-        //ref
     } = props;
 
     const componentStyle = getComponentStyleByProps(props),
@@ -40,7 +40,7 @@ function Custom(props) {
         ];
 
     return <RNTextInput
-        // ref={input => typeof ref === 'function' && ref(input)}
+        ref={ref}
         value={'' + value}
         style={textInputStyle}
 
@@ -61,7 +61,12 @@ function Custom(props) {
 
         clearButtonMode={clearButton ? 'while-editing' : 'never'}
     />
-}
+});
+// function Custom() {
+//     return forwardRef(function (props) {
+//
+//     });
+// }
 
 Custom.defaultProps = {
     componentName: 'TextInput.Custom',
@@ -125,7 +130,7 @@ class BuilderTextInputStyles extends BuilderStyles {
 
     font(handle) {
         if (typeof handle !== 'function') {
-            throw new Error('Handle must be a type of function');
+            throw new Error('[Builder.Styles] TextInput (Font): Handle must be a type of function');
         }
         this.styles.input = handle(new BuilderFont());
         return this;
@@ -171,15 +176,15 @@ class BuilderTextInputProps extends BuilderProps {
     }
 
     onFocus(handle) {
-        return this._applyHandle('onFocus', handle);
+        return this._applyHandle('onFocus', handle, true);
     }
 
     onBlur(handle) {
-        return this._applyHandle('onBlur', handle);
+        return this._applyHandle('onBlur', handle, true);
     }
 
     onKeyPress(handle) {
-        return this._applyHandle('onKeyPress', handle);
+        return this._applyHandle('onKeyPress', handle, true);
     }
 
     value(value) {
@@ -232,8 +237,14 @@ class Labeled extends Component {
         >
             <Custom
                 {...this.props.textInput}
-                onFocus={this.onFocus}
-                onBlur={this.onBlur}
+                onFocus={() => {
+                    this.onFocus();
+                    this.props.textInput.onFocus && this.props.textInput.onFocus();
+                }}
+                onBlur={() => {
+                    this.onBlur();
+                    this.props.textInput.onBlur && this.props.textInput.onBlur();
+                }}
             />
         </Label.Floating>;
     }
@@ -261,14 +272,14 @@ Labeled.defineStyles = {
     },
     label(handle) {
         if (typeof handle !== 'function') {
-            throw new Error('Handle must be a type of function');
+            throw new Error('[Builder.Styles] TextInput.Labeled (Label): Handle must be a type of function');
         }
         this._styles.label = handle(Label.Floating.defineStyles);
         return this;
     },
     textInput(handle) {
         if (typeof handle !== 'function') {
-            throw new Error('Handle must be a type of function');
+            throw new Error('[Builder.Styles] TextInput.Labeled (TextInput): Handle must be a type of function');
         }
         this._styles.textInput = handle(Custom.defineStyles);
         return this;
@@ -292,14 +303,14 @@ Labeled.defineProps = {
     // component
     label(handle) {
         if (typeof handle !== 'function') {
-            throw new Error('Handle must be a type of function');
+            throw new Error('[Builder.Props] TextInput.Labeled (Label): Handle must be a type of function');
         }
         this._props.label = handle(Label.Floating.defineProps);
         return this;
     },
     textInput(handle) {
         if (typeof handle !== 'function') {
-            throw new Error('Handle must be a type of function');
+            throw new Error('[Builder.Props] TextInput.Labeled (TextInput): Handle must be a type of function');
         }
         this._props.textInput = handle(Custom.defineProps);
 

@@ -34,8 +34,6 @@ function Custom(props) {
             }
         ];
 
-    console.log('!!!!!!!!', componentStyle);
-
     return <RNImage
         source={getSource(props.source, props.uri)}
         resizeMode={props.mode}

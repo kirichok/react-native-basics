@@ -64,12 +64,22 @@ const Basics = {
         };
     },
 
+    get Helpers() {
+        return {
+            Device: require('./helpers/Device')
+        }
+    },
+
     get configs() {
         return require('./configs');
     },
 
     get BaseReduxModule() {
         return require('./helpers/ReduxModules');
+    },
+
+    get GoogleApi() {
+        return require('./helpers/GoogleApi');
     },
 
     registerComponentStyle(componentName, style) {
