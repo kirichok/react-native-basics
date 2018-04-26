@@ -23,6 +23,7 @@ const Custom = forwardRef((props, ref) => {
         editable,
         focus,
         clearButton,
+        maxLength,
 
         onFocus,
         onBlur,
@@ -58,6 +59,7 @@ const Custom = forwardRef((props, ref) => {
         secureTextEntry={secure}
         editable={editable}
         autoFocus={focus}
+        maxLength={maxLength}
 
         clearButtonMode={clearButton ? 'while-editing' : 'never'}
     />
@@ -75,6 +77,7 @@ Custom.defaultProps = {
     onChange: null,
     value: '',
     style: {},
+    maxLength: undefined,
 
     keyboard: 'default',
     secure: false,
@@ -189,6 +192,11 @@ class BuilderTextInputProps extends BuilderProps {
 
     value(value) {
         this.props.value = value;
+        return this;
+    }
+
+    max(value) {
+        this.props.maxLength = value;
         return this;
     }
 }

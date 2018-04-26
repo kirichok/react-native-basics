@@ -110,7 +110,23 @@ class GeoCode extends Sender {
             const result = await this.send('POST', {
                 address
             });
-            return this.format(_.isArray(result) && result.length ? result[0] : {});
+            return _.isArray(result) && result.length ? this.format(result[0]) : false;
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    async getFormatedFullAddressByZipAndCountry(zip, country = 'US') {
+        try {
+            const result = await this.send('POST', {
+                address: `${zip}, ${country}`
+            });
+
+            if (_.isArray(result) && result.length) {
+                const address = _.find(result, r => this.format(r).address_zip === zip);
+                return address ? this.format(address) : false;
+            }
+            return false;
         } catch (e) {
             throw e;
         }

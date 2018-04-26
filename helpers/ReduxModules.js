@@ -38,6 +38,10 @@ class Module {
         this[name.toUpperCase()] = createAction(this.ACTIONS[name.toUpperCase()], handle);
     };
 
+    async getJWT() {
+        return false
+    };
+
     send = async (method, path, data = {}, additionalHeaders = {}) => {
         const isFormData = data && data instanceof FormData,
             headers = {
@@ -45,10 +49,23 @@ class Module {
                 ...additionalHeaders
             };
 
-        // TODO: Where JWT need save?
-        if (this.jwt) {
-            headers['AUTHORIZATION'] = this.jwt;
+        let jwt = await this.getJWT();
+        if (jwt) {
+            headers['AUTHORIZATION'] = 'Bearer ' + jwt;
         }
+
+        console.log('API:', {
+            method,
+            headers,
+            url: this.url + path,
+
+            params: method === 'GET' ? (data ? data : undefined) : undefined,
+            data: method !== 'GET' ? (isFormData ? data : JSON.stringify(data)) : undefined,
+
+            paramsSerializer: function (params) {
+                return qs.stringify(params);
+            },
+        });
 
         return await toAPI(Axios({
             method,
@@ -77,16 +94,11 @@ class Module {
     }
 
     onNotAsync(state, type, payload) {
-        console.error('NOT ASYNC ACTION: ', type, payload);
         return {};
     }
 
     getReducer = (state = this.initalState, {type = '', payload = null}) => {
-        console.log('0', type, payload);
         if (type.split('/')[0] === this.name) {
-
-            console.log('1', type, payload);
-
             switch (true) {
                 case type.match(FULFILLED) !== null:
                     return {
@@ -106,7 +118,6 @@ class Module {
 
                 case type.match(REJECTED) !== null:
                     console.log('REJECTED', payload);
-
                     return {
                         ...state,
                         ...this.onRejected(state, type.replace(REJECTED, '').replace(this.nameRegExp, ''), payload),
@@ -115,6 +126,7 @@ class Module {
                     };
 
                 default:
+                    // console.error('NOT ASYNC ACTION: ', type, payload);
                     return {
                         ...state,
                         loading: false,

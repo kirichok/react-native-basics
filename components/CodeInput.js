@@ -78,7 +78,7 @@ class CodeInput extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (prevState.codeOnDevMode !== nextProps.codeOnDevMode) {
+        if (nextProps.codeOnDevMode && prevState.codeOnDevMode !== nextProps.codeOnDevMode) {
             return {
                 codeOnDevMode: nextProps.codeOnDevMode,
                 code: nextProps.codeOnDevMode,
@@ -112,8 +112,6 @@ class CodeInput extends Component {
         onChangeText={text => {
             let code = text;
             if (this.props.error) {
-
-
                 if (text.length === this.props.code.len + 1) {
                     code = text.slice(-1);
                 }
