@@ -1,7 +1,8 @@
 import React, {Component, forwardRef} from 'react';
 import PropTypes from 'prop-types';
 import {
-    TextInput as RNTextInput
+    TextInput as RNTextInput,
+    View
 } from 'react-native';
 import {BuilderStyles, BuilderProps, BuilderFont} from "../../helpers/Builders";
 import Props, {} from '../../helpers/PropTypes';
@@ -56,6 +57,7 @@ const Custom = forwardRef((props, ref) => {
 
         clearTextOnFocus={false}
         autoCorrect={false}
+        autoComplete={false}
         secureTextEntry={secure}
         editable={editable}
         autoFocus={focus}
@@ -213,12 +215,6 @@ registerComponentStyle(Custom, Custom.defineStyles
  **/
 
 
-
-
-
-
-
-
 /**
  * TextInput with Label
  **/
@@ -243,17 +239,20 @@ class Labeled extends Component {
             {...this.props.label}
             focused={this.state.focused || this.props.textInput.value}
         >
-            <Custom
-                {...this.props.textInput}
-                onFocus={() => {
-                    this.onFocus();
-                    this.props.textInput.onFocus && this.props.textInput.onFocus();
-                }}
-                onBlur={() => {
-                    this.onBlur();
-                    this.props.textInput.onBlur && this.props.textInput.onBlur();
-                }}
-            />
+            <View style={{flexDirection: 'row'}}>
+                <Custom
+                    {...this.props.textInput}
+                    onFocus={() => {
+                        this.onFocus();
+                        this.props.textInput.onFocus && this.props.textInput.onFocus();
+                    }}
+                    onBlur={() => {
+                        this.onBlur();
+                        this.props.textInput.onBlur && this.props.textInput.onBlur();
+                    }}
+                />
+                {this.props.Right}
+            </View>
         </Label.Floating>;
     }
 }
@@ -324,12 +323,14 @@ Labeled.defineProps = {
 
         return this;
     },
+    rightComponent(component) {
+        this._props.Right = component;
+        return this;
+    },
     get get() {
         return this._props;
     }
 };
-
-
 
 
 Custom.Labeled = Labeled;
