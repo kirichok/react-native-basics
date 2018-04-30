@@ -11,6 +11,8 @@ const PENDING = new RegExp('.pending', 'gi'),
     FULFILLED = new RegExp('.fulfilled', 'gi'),
     REJECTED = new RegExp('.rejected', 'gi');
 
+const CLEAR_ERROR = 'CLEAR_ERROR';
+
 class Module {
     constructor(url, state) {
         this.name = this.constructor.name;
@@ -29,7 +31,7 @@ class Module {
     }
 
     createActions() {
-
+        this.initAction(CLEAR_ERROR, () => {});
     };
 
     initAction = (name, handle) => {
@@ -79,6 +81,10 @@ class Module {
                 return qs.stringify(params);
             },
         }));
+    };
+
+    clearError = () => {
+        return this[CLEAR_ERROR]();
     };
 
     onPending(state, type, payload) {
