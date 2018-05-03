@@ -18,6 +18,7 @@ const Custom = forwardRef((props, ref) => {
     const {
         onChange,
         value,
+        placeholder,
 
         keyboard,
         secure,
@@ -44,6 +45,7 @@ const Custom = forwardRef((props, ref) => {
     return <RNTextInput
         ref={ref}
         value={'' + value}
+        placeholder={placeholder}
         style={textInputStyle}
 
         onChangeText={onChange}
@@ -78,6 +80,7 @@ Custom.defaultProps = {
 
     onChange: null,
     value: '',
+    placeholder: '',
     style: {},
     maxLength: undefined,
 
@@ -90,6 +93,7 @@ Custom.defaultProps = {
 Custom.propTypes = {
     onChange: PropTypes.func.isRequired,
     value: Props.numberOrString,
+    placeholder: PropTypes.string,
     style: Props.objectOrNumberOrArray,
 
     keyboard: PropTypes.string,
@@ -194,6 +198,11 @@ class BuilderTextInputProps extends BuilderProps {
 
     value(value) {
         this.props.value = value;
+        return this;
+    }
+
+    placeholder(value) {
+        this.props.placeholder = value;
         return this;
     }
 
