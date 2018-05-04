@@ -5,6 +5,7 @@ import configs from '../configs'
 
 class Sender {
     constructor(apiName, defaultSearch = '') {
+        this.apiName = apiName.toUpperCase();
         this.url = `https://maps.googleapis.com/maps/api/${apiName}/json`;
         this.key = configs.get().GOOGLE_API_KEY;
         this.default = defaultSearch;
@@ -21,7 +22,7 @@ class Sender {
                 url: this.url + '?' + qs.stringify(data, {format: 'RFC1738'}),
             });
 
-            console.log('GOOGLE API RES: ', this.url + '?' + qs.stringify(data, {format: 'RFC1738'}), result);
+            console.log(`GOOGLE API: ${this.apiName}: RES:`, this.url + '?' + qs.stringify(data, {format: 'RFC1738'}), result);
 
             if (result.status === 200 && result.data.status.match('OK|ZERO_RESULTS')) {
                 return result.data;
@@ -29,7 +30,7 @@ class Sender {
                 throw result;
             }
         } catch (e) {
-            console.log('GOOGLE API ERROR: ', e);
+            console.log(`GOOGLE API: ${this.apiName}: ERROR:`, e);
             throw e;
         }
     };
@@ -89,7 +90,30 @@ class Sender {
             }
         });
 
+        let street = this.concatAddress('', address.line2);
+        street = this.concatAddress(street, address.line1);
+
+        let city = this.concatAddress('', address.city);
+        city = this.concatAddress(city, address.state);
+        city = this.concatAddress(city, address.zip);
+        city = this.concatAddress(city, address.country);
+
+        if (street) {
+            address.text = street;
+        }
+
+        if (city) {
+            address.subText = city;
+        }
+
         return address;
+    };
+
+    concatAddress = (full, part) => {
+        if (part) {
+            full += (full ? ', ' : '') + part;
+        }
+        return full;
     };
 }
 
@@ -100,10 +124,10 @@ class GeoCode extends Sender {
 
     async getAddressByCoordinates(lat, lng) {
         try {
-            const {data} = await this.send('POST', {
+            const {results} = await this.send('POST', {
                 latlng: lat + ',' + lng
             });
-            return data;
+            return _.isArray(results) && results.length ? this.format(results[0]): false;
         } catch (e) {
             throw e;
         }
