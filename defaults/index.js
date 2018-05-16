@@ -7,6 +7,15 @@ export function create(styles) {
     return StyleSheet.create(styles);
 }
 
+export class CreateInFuture {
+    _create(name, styles) {
+        if (!name) {
+            name = create(styles);
+        }
+        return name;
+    }
+}
+
 export const font = {
     size: {
         sm: 10,
