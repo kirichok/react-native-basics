@@ -29,7 +29,10 @@ const Custom = forwardRef((props, ref) => {
 
         onFocus,
         onBlur,
-        onKeyPress
+        onKeyPress,
+
+        returnKeyType,
+        onSubmitEditing
     } = props;
 
     const componentStyle = getComponentStyleByProps(props),
@@ -52,6 +55,9 @@ const Custom = forwardRef((props, ref) => {
         onFocus={onFocus}
         onBlur={onBlur}
         onKeyPress={onKeyPress}
+
+        returnKeyType={returnKeyType}
+        onSubmitEditing={onSubmitEditing}
 
         underlineColorAndroid={'transparent'}
         autoCapitalize={'none'}
@@ -208,6 +214,15 @@ class BuilderTextInputProps extends BuilderProps {
 
     max(value) {
         this.props.maxLength = value;
+        return this;
+    }
+
+    onSubmitEditing(handle) {
+        return this._applyHandle('onSubmitEditing', handle, true);
+    }
+
+    returnKeyType(value) {
+        this.props.returnKeyType = value;
         return this;
     }
 }

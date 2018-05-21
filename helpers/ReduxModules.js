@@ -36,7 +36,7 @@ class Module {
 
     initAction = (name, handle) => {
         this.ACTIONS[name.toUpperCase()] = `${this.name}/${name.toUpperCase()}`;
-        this.HANDLERS[[name.toUpperCase()]] = handle;
+        this.HANDLERS[name.toUpperCase()] = handle;
         this[name.toUpperCase()] = createAction(this.ACTIONS[name.toUpperCase()], handle);
     };
 
