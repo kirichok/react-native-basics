@@ -17,6 +17,8 @@ class Sender {
         }
         data.key = this.key;
         try {
+            console.log(`GOOGLE API: ${this.apiName}: RES:`, this.url + '?' + qs.stringify(data, {format: 'RFC1738'}));
+
             const result = await Axios({
                 method,
                 url: this.url + '?' + qs.stringify(data, {format: 'RFC1738'}),
@@ -135,23 +137,23 @@ class GeoCode extends Sender {
 
     async getFormatedFullAddressByAddress(address) {
         try {
-            const {data} = await this.send('POST', {
-                address: this.addDefaultSearch(value)
+            const {results} = await this.send('POST', {
+                address: this.addDefaultSearch(address)
             });
-            return _.isArray(data) && data.length ? _.map(data, r => this.format(r)) : false;
+            return _.isArray(results) && results.length ? this.format(results[0]) : false;
         } catch (e) {
             throw e;
         }
     }
 
-    async getFormatedFullAddressByZipAndCountry(zip, country = 'US') {
+    async getFormatedFullAddressByZipAndCountry(zip) {
         try {
-            const {data} = await this.send('POST', {
+            const {results} = await this.send('POST', {
                 address: this.addDefaultSearch(zip)
             });
 
-            if (_.isArray(data) && data.length) {
-                const address = _.find(data, r => this.format(r).zip === zip);
+            if (_.isArray(results) && results.length) {
+                const address = _.find(results, r => this.format(r).zip === zip);
                 return address ? this.format(address) : false;
             }
             return false;
@@ -163,12 +165,12 @@ class GeoCode extends Sender {
 
 class PlaceDetail extends Sender {
     constructor() {
-        super('place/detail');
+        super('place/details');
     }
 
-    async getAddress(placeId) {
+    async getAddress(placeid) {
         try {
-            const result = await this.send('POST', {placeId});
+            const result = await this.send('POST', {placeid});
             return result.result ? this.format(result.result) : false;
         } catch (e) {
             throw e;
@@ -212,7 +214,7 @@ class Place {
 
     getPlaces = async input => await this.autocomplete.getPlaces(input);
 
-    getAddress = async placeId => await this.autocomplete.getAddress(placeId);
+    getAddress = async placeId => await this.detail.getAddress(placeId);
 }
 
 module.exports = {
