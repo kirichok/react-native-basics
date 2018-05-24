@@ -1,7 +1,5 @@
 import React from 'react';
-import {
-    TouchableOpacity, View
-} from 'react-native';
+import {View} from 'react-native';
 import PropTypes from "prop-types";
 import Props from "../../helpers/PropTypes";
 import {BuilderProps, BuilderStyles} from "../../helpers/Builders";
@@ -12,6 +10,7 @@ import {
     registerComponentStyle
 } from "../../defaults";
 import {value} from "../../helpers/Style";
+import {ThrottledTouchableOpacity} from "./ThrottledTouchable";
 
 const {Text: CustomText} = require('./Text');
 const {Image: CustomImage} = require('./Image');
@@ -29,13 +28,13 @@ function Custom(props) {
         ],
         containerStyle = [componentStyle.container, {height: props.height}];
 
-    return <TouchableOpacity
+    return <ThrottledTouchableOpacity
         activeOpacity={props.activeOpacity}
         style={wrapStyle}
         onPress={props.disabled ? null : props.onPress}
     >
         <View style={containerStyle}>{props.children}</View>
-    </TouchableOpacity>;
+    </ThrottledTouchableOpacity>;
 }
 
 Custom.defaultProps = {
