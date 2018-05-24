@@ -6,6 +6,11 @@ const Basics = {
     get Button() {
         return require('./components/Custom/Button');
     },
+    get Throttled() {
+        return {
+            ...require('./components/Custom/ThrottledTouchable')
+        };
+    },
     get Text() {
         return require('./components/Custom/Text').Text;
     },
@@ -61,7 +66,8 @@ const Basics = {
         return {
             ...require('./helpers'),
             ...require('./utils'),
-            ...require('./utils/validator')
+            ...require('./utils/validator'),
+            ...require('./utils/cardTypes'),
         };
     },
 

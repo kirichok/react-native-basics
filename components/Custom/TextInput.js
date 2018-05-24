@@ -232,6 +232,11 @@ class BuilderTextInputProps extends BuilderProps {
         this.props.blurOnSubmit = value;
         return this;
     }
+
+    mask(value) {
+        this.props.mask = value;
+        return this;
+    }
 }
 
 registerComponentStyle(Custom, Custom.defineStyles
@@ -266,12 +271,14 @@ class Labeled extends Component {
     };
 
     render() {
+        const TextInput_ = this.props.textInputComponent ? this.props.textInputComponent : Custom;
+
         return <Label.Floating
             {...this.props.label}
             focused={this.state.focused || this.props.textInput.value}
         >
             <View style={{flexDirection: 'row'}}>
-                <Custom
+                <TextInput_
                     {...this.props.textInput}
                     onFocus={() => {
                         this.onFocus();
@@ -356,6 +363,10 @@ Labeled.defineProps = {
     },
     rightComponent(component) {
         this._props.Right = component;
+        return this;
+    },
+    textInputComponent(component) {
+        this._props.textInputComponent = component;
         return this;
     },
     get get() {
