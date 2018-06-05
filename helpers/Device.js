@@ -4,6 +4,7 @@ import {
     getBuildNumber,
     getVersion
 } from 'react-native-device-info';
+import Configs from '../configs';
 
 /**
 * Device info
@@ -14,7 +15,16 @@ export const info = {
 
     isTablet: isTablet(),
     isPhone: !isTablet(),
-    version: getVersion() + (this.isIOS ? '-' + getBuildNumber() : '')
+    get version() {
+        const config = Configs.get();
+        let version = getVersion();
+
+        if (config.IS_DEV) {
+            version += (Platform.OS === 'ios' ? '-' + getBuildNumber() : '');
+        }
+
+        return version
+    }
 };
 
 /**

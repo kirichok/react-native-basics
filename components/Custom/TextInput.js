@@ -310,41 +310,60 @@ Labeled.defaultProps = {
     textInput: Custom.defaultProps
 };
 Labeled.displayName = Labeled.defaultProps.componentName;
-Labeled.defineStyles = {
-    _styles: {
+
+Object.defineProperty(Labeled, 'defineStyles', {
+    get: function () {
+        return new BuilderLabeledStyles();
+    }
+});
+Object.defineProperty(Labeled, 'defineProps', {
+    get: function () {
+        return new BuilderLabeledProps();
+    }
+});
+
+class BuilderLabeledStyles {
+    _styles = {
         label: {},
         textInput: {}
-    },
+    };
+
     label(handle) {
         if (typeof handle !== 'function') {
             throw new Error('[Builder.Styles] TextInput.Labeled (Label): Handle must be a type of function');
         }
         this._styles.label = handle(Label.Floating.defineStyles);
         return this;
-    },
+    }
+
     textInput(handle) {
         if (typeof handle !== 'function') {
             throw new Error('[Builder.Styles] TextInput.Labeled (TextInput): Handle must be a type of function');
         }
         this._styles.textInput = handle(Custom.defineStyles);
         return this;
-    },
+    }
+
     get get() {
         return this._styles;
     }
-};
-Labeled.defineProps = {
-    _props: {
+}
+
+class BuilderLabeledProps {
+    _props = {
         label: {},
         textInput: {}
-    },
+    };
+
     disable(value) {
         this._props.disabled = value;
         return this;
-    },
+    }
+
     get disabled() {
         return this.disable(true);
-    },
+    }
+
     // component
     label(handle) {
         if (typeof handle !== 'function') {
@@ -352,7 +371,8 @@ Labeled.defineProps = {
         }
         this._props.label = handle(Label.Floating.defineProps);
         return this;
-    },
+    }
+
     textInput(handle) {
         if (typeof handle !== 'function') {
             throw new Error('[Builder.Props] TextInput.Labeled (TextInput): Handle must be a type of function');
@@ -360,19 +380,22 @@ Labeled.defineProps = {
         this._props.textInput = handle(Custom.defineProps);
 
         return this;
-    },
+    }
+
     rightComponent(component) {
         this._props.Right = component;
         return this;
-    },
+    }
+
     textInputComponent(component) {
         this._props.textInputComponent = component;
         return this;
-    },
+    }
+
     get get() {
         return this._props;
     }
-};
+}
 
 
 Custom.Labeled = Labeled;

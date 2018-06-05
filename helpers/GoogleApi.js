@@ -92,23 +92,7 @@ class Sender {
             }
         });
 
-        let street = this.concatAddress('', address.line2);
-        street = this.concatAddress(street, address.line1);
-
-        let city = this.concatAddress('', address.city);
-        city = this.concatAddress(city, address.state);
-        city = this.concatAddress(city, address.zip);
-        city = this.concatAddress(city, address.country);
-
-        if (street) {
-            address.text = street;
-        }
-
-        if (city) {
-            address.subText = city;
-        }
-
-        return address;
+        return getFormatedAddress(address);
     };
 
     concatAddress = (full, part) => {
@@ -129,7 +113,7 @@ class GeoCode extends Sender {
             const {results} = await this.send('POST', {
                 latlng: lat + ',' + lng
             });
-            return _.isArray(results) && results.length ? this.format(results[0]): false;
+            return _.isArray(results) && results.length ? this.format(results[0]) : false;
         } catch (e) {
             throw e;
         }
@@ -219,5 +203,41 @@ class Place {
 
 module.exports = {
     GeoCode,
-    Place
+    Place,
+
+    getFormatedAddress
 };
+
+function getFormatedAddress(address) {
+    if (!address) {
+        return
+    }
+
+    let street = concatAddress('', address.line2);
+    street = concatAddress(street, address.line1);
+
+    let city = concatAddress('', address.city);
+    city = concatAddress(city, address.state);
+    city = concatAddress(city, address.zip);
+    city = concatAddress(city, address.country);
+
+    const res = _.assign({}, address);
+
+    if (street) {
+        res.text = street;
+    }
+
+    if (city) {
+        res.subText = city;
+    }
+
+    return res;
+}
+
+function concatAddress(full, part)
+{
+    if (part) {
+        full += (full ? ', ' : '') + part;
+    }
+    return full;
+}
