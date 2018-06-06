@@ -14,8 +14,8 @@ const PENDING = new RegExp('.pending', 'gi'),
 const CLEAR_ERROR = 'CLEAR_ERROR';
 
 class Module {
-    constructor(url, state) {
-        this.name = this.constructor.name;
+    constructor(name, url, state) {
+        this.name = name;
         this.nameRegExp = new RegExp(`^${this.name}.`, 'gi');
         this.url = configs.get().SERVER_API + url;
         // TODO: Where JWT need save?
@@ -27,6 +27,18 @@ class Module {
         };
         this.ACTIONS = {};
         this.HANDLERS = {};
+
+        this.onPending = this.onPending.bind(this);
+        this.onFulfilled = this.onFulfilled.bind(this);
+        this.onRejected = this.onRejected.bind(this);
+        this.onNotAsync = this.onNotAsync.bind(this);
+        this.getReducer = this.getReducer.bind(this);
+        this.clearError = this.clearError.bind(this);
+        this.send = this.send.bind(this);
+        this.getJWT = this.getJWT.bind(this);
+        this.initAction = this.initAction.bind(this);
+        this.createActions = this.createActions.bind(this);
+
         this.createActions();
     }
 
@@ -34,7 +46,7 @@ class Module {
         this.initAction(CLEAR_ERROR, () => {});
     };
 
-    initAction = (name, handle) => {
+    initAction(name, handle) {
         this.ACTIONS[name.toUpperCase()] = `${this.name}/${name.toUpperCase()}`;
         this.HANDLERS[name.toUpperCase()] = handle;
         this[name.toUpperCase()] = createAction(this.ACTIONS[name.toUpperCase()], handle);
@@ -44,7 +56,7 @@ class Module {
         return false
     };
 
-    send = async (method, path, data = {}, additionalHeaders = {}) => {
+    async send(method, path, data = {}, additionalHeaders = {}) {
         const isFormData = data && data instanceof FormData,
             headers = {
                 'Content-Type': isFormData ? 'multipart/form-data' : 'application/json',
@@ -103,7 +115,7 @@ class Module {
         return {};
     }
 
-    getReducer = (state = this.initalState, {type = '', payload = null}) => {
+    getReducer(state = this.initalState, {type = '', payload = null}) {
         if (type.split('/')[0] === this.name) {
             switch (true) {
                 case type.match(FULFILLED) !== null:
