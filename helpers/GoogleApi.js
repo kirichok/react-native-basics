@@ -223,19 +223,21 @@ function getFormatedAddress(address) {
 
     const res = _.assign({}, address);
 
+    res.fullText = '';
     if (street) {
+        res.fullText = concatAddress(res.fullText, street);
         res.text = street;
     }
 
     if (city) {
+        res.fullText = concatAddress(res.fullText, city);
         res.subText = city;
     }
 
     return res;
 }
 
-function concatAddress(full, part)
-{
+function concatAddress(full, part) {
     if (part) {
         full += (full ? ', ' : '') + part;
     }
