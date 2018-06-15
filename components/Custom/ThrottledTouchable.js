@@ -1,8 +1,5 @@
 import React from 'react'
-import {
-    TouchableOpacity,
-    TouchableWithoutFeedback
-} from 'react-native'
+import {TouchableOpacity, TouchableWithoutFeedback} from 'react-native'
 import _ from 'lodash'
 
 const DEF_PERIOD = 500;
@@ -19,15 +16,13 @@ function ThrottledTouchable(Touchable) {
     }
 }
 
-
 /**
  * Returns {@link TouchableOpacity} that fires onPress only once per the specified period (in ms.)
  * You can also use 'period' property to override the default value: {@link DEF_PERIOD} ms.
  * @return {TouchableOpacity}
  */
 export function ThrottledTouchableOpacity(props) {
-    const Touchable = ThrottledTouchable(TouchableOpacity);
-    return <Touchable {...props}/>
+    return ThrottledTouchable(TouchableOpacity)(props)
 }
 
 /**
@@ -36,6 +31,5 @@ export function ThrottledTouchableOpacity(props) {
  * @return {TouchableWithoutFeedback}
  */
 export function ThrottledTouchableWithoutFeedback(props) {
-    const Touchable = ThrottledTouchable(TouchableWithoutFeedback);
-    return <Touchable {...props}/>
+    return ThrottledTouchable(TouchableWithoutFeedback)(props)
 }
