@@ -93,6 +93,10 @@ const Basics = {
         registerComponentStyle(componentName, style);
     },
 
+    get Animations() {
+        return require('./components/Animations');
+    },
+
     get copyComponent() {
         return getComponentCopy;
     }
