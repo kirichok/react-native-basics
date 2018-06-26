@@ -87,7 +87,7 @@ export class TranslateYAndOpacity extends Component {
 
     render() {
         const {opacityValue, translateYValue} = this.state;
-        const {children} = this.props;
+        const {style, children} = this.props;
         const animatedStyles = {
             opacity: opacityValue,
             transform: [
@@ -96,7 +96,7 @@ export class TranslateYAndOpacity extends Component {
             ],
         };
         return (
-            <Animated.View style={animatedStyles}>{children}</Animated.View>
+            <Animated.View style={[style, animatedStyles]}>{children}</Animated.View>
         );
     }
 }

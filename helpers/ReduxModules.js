@@ -11,7 +11,8 @@ const PENDING = new RegExp('.pending', 'gi'),
     FULFILLED = new RegExp('.fulfilled', 'gi'),
     REJECTED = new RegExp('.rejected', 'gi');
 
-const CLEAR_ERROR = 'CLEAR_ERROR';
+const CLEAR_ERROR = 'CLEAR_ERROR',
+    INITIAL_STATE = 'INITIAL_STATE';
 
 class Module {
     constructor(name, url, state) {
@@ -44,6 +45,10 @@ class Module {
 
     createActions() {
         this.initAction(CLEAR_ERROR, () => {});
+        this.initAction(INITIAL_STATE, () => {
+            // console.log('>>> ACTION:', this.name, ' TO: ', this.initalState);
+            return this.initalState;
+        });
     };
 
     initAction(name, handle) {
@@ -99,6 +104,10 @@ class Module {
         return this[CLEAR_ERROR]();
     };
 
+    setInitialState = () => {
+        return this[INITIAL_STATE]();
+    };
+
     onPending(state, type, payload) {
         return {};
     }
@@ -112,6 +121,12 @@ class Module {
     }
 
     onNotAsync(state, type, payload) {
+        switch (type) {
+            case INITIAL_STATE: {
+                // console.log('SET INITIAL FOR:', this.name, ' TO: ', payload);
+                return {...payload}
+            }
+        }
         return {};
     }
 
