@@ -1,18 +1,28 @@
-import React from 'react'
+import React, {Component} from 'react'
 import {TouchableOpacity, TouchableWithoutFeedback} from 'react-native'
 import _ from 'lodash'
 
 const DEF_PERIOD = 500;
 
-function ThrottledTouchable(Touchable) {
-    return function (props) {
-        // noinspection JSUnresolvedVariable
-        const period = props.period ? props.period : DEF_PERIOD;
-        const debouncedHandler = props.onPress
-            ? _.throttle(props.onPress, period, {trailing: false})
-            : undefined;
+class ThrottledTouchable extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {...props};
+        this.debounceHandler = _.throttle(this.onPress, props.period, {trailing: false});
+    }
 
-        return <Touchable {...props} onPress={debouncedHandler}/>
+    static getDerivedStateFromProps(nextProps, prevState) {
+        return {...nextProps}
+    }
+
+    onPress = () => {
+        const {onPress} = this.props;
+        onPress && onPress();
+    };
+
+    render() {
+        const {Touchable, ...rest} = this.props;
+        return <Touchable {...rest} onPress={this.debounceHandler}/>
     }
 }
 
@@ -22,7 +32,7 @@ function ThrottledTouchable(Touchable) {
  * @return {TouchableOpacity}
  */
 export function ThrottledTouchableOpacity(props) {
-    return ThrottledTouchable(TouchableOpacity)(props)
+    return <ThrottledTouchable Touchable={TouchableOpacity} {...props}/>
 }
 
 /**
@@ -31,5 +41,11 @@ export function ThrottledTouchableOpacity(props) {
  * @return {TouchableWithoutFeedback}
  */
 export function ThrottledTouchableWithoutFeedback(props) {
-    return ThrottledTouchable(TouchableWithoutFeedback)(props)
+    return <ThrottledTouchable Touchable={TouchableWithoutFeedback} {...props}/>
 }
+
+
+
+
+
+
