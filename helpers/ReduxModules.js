@@ -90,7 +90,7 @@ class Module {
             method,
             headers,
             url: this.url + path,
-
+            timeout: 16000,
             params: method === 'GET' ? (data ? data : undefined) : undefined,
             data: method !== 'GET' ? (isFormData ? data : JSON.stringify(data)) : undefined,
 
