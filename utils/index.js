@@ -23,6 +23,8 @@ export async function toAPI(promise) {
             }
         },
         reject => {
+            console.log('--- TO API:', reject.response);
+
             if (!reject.response) {
                 throw {
                     status: 0,
@@ -32,15 +34,16 @@ export async function toAPI(promise) {
             }
 
             const {
-                statusCode = 500,
-                message = '',
-                error = 'Unknown error'
-            } = reject.response.data;
-
-            console.log('--- TO API:', reject.response);
+                status = 500,
+                data: {
+                    statusCode = 500,
+                    message = '',
+                    error = 'Unknown error'
+                }
+            } = reject.response;
 
             throw {
-                status: statusCode,
+                status: status ? status : statusCode,
                 message,
                 error
             };
